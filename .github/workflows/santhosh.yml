@@ -1,0 +1,55 @@
+name: Python CI with SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install coverage
+
+    - name: Run tests and collect coverage
+      run: |
+        coverage run -m unittest discover
+        coverage report -m
+
+    - name: Get SonarScanner version
+      id: get-sonar-version
+      run: |
+        echo "::set-output name=version::$(curl -sL https://api.github.com/repos/SonarSource/sonar-scanner-cli/releases/latest | jq -r .tag_name)"
+
+    - name: Download and extract SonarScanner
+      run: |
+        wget -O sonar-scanner-cli.zip "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ steps.get-sonar-version.outputs.version }}-linux.zip"
+        unzip -l sonar-scanner-cli.zip
+        unzip sonar-scanner-cli.zip
+        export PATH=$PATH:$PWD/sonar-scanner-${{ steps.get-sonar-version.outputs.version }}-linux/bin
+        rm sonar-scanner-cli.zip
+
+    - name: SonarCloud Scan
+      run: |
+        ./sonar-scanner-${{ steps.get-sonar-version.outputs.version }}-linux/bin/sonar-scanner \
+          -Dsonar.projectKey=santhosh80553_python_ci_sonarcloud\
+          -Dsonar.organization=santhosh80553\
+          -Dsonar.sources=. \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
