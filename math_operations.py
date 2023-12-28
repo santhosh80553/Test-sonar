@@ -19,3 +19,6 @@ def divide(x, y):
 
 def is_positive(x):
     return x > 0
+
+def power(x, exponent):
+    return x ** exponent
