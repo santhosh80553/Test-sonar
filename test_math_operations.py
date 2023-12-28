@@ -1,8 +1,8 @@
-# test_math_operations.py
+# test_calculator.py
 import unittest
-from math_operations import add, subtract, multiply, divide
+from calculator import add, subtract, multiply, divide, is_positive
 
-class TestMathOperations(unittest.TestCase):
+class TestCalculator(unittest.TestCase):
     def test_add(self):
         self.assertEqual(add(2, 3), 5)
 
@@ -16,6 +16,11 @@ class TestMathOperations(unittest.TestCase):
         self.assertEqual(divide(6, 2), 3)
         with self.assertRaises(ValueError):
             divide(1, 0)
+
+    def test_is_positive(self):
+        self.assertTrue(is_positive(5))
+        self.assertFalse(is_positive(-5))
+        self.assertFalse(is_positive(0))
 
 if __name__ == '__main__':
     unittest.main()
