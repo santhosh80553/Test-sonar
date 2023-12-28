@@ -62,3 +62,4 @@ jobs:
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         # Add a step to print SonarCloud analysis logs
         cat .scannerwork/report-task.txt
+
