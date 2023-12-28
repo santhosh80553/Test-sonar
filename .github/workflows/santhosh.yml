@@ -55,7 +55,6 @@ jobs:
           -Dsonar.projectKey=santhosh80553_unittest_repo_test_sonar\
           -Dsonar.organization=santhosh80553\
           -Dsonar.sources=. \
-            
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         # Add a step to print SonarCloud analysis logs
