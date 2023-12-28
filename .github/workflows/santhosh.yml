@@ -1,5 +1,4 @@
 name: Python CI with SonarCloud
-
 on:
   push:
     branches:
