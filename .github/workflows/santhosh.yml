@@ -34,7 +34,11 @@ jobs:
     - name: Run tests and collect coverage
       run: |
         coverage run -m unittest discover
-        coverage report -m
+        coverage xml -o coverage.xml
+
+    - name: Print coverage report
+      run: |
+        cat coverage.xml
 
     - name: Get SonarScanner version
       id: get-sonar-version
