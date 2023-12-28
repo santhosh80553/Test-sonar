@@ -4,17 +4,14 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-      - dev
+
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.8]
 
     steps:
     - name: Checkout code
@@ -47,19 +44,17 @@ jobs:
     - name: Download and extract SonarScanner
       run: |
         wget -O sonar-scanner-cli.zip "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ steps.get-sonar-version.outputs.version }}-linux.zip"
-        unzip -l sonar-scanner-cli.zip
-        unzip sonar-scanner-cli.zip
+        unzip -q sonar-scanner-cli.zip
         export PATH=$PATH:$PWD/sonar-scanner-${{ steps.get-sonar-version.outputs.version }}-linux/bin
         rm sonar-scanner-cli.zip
 
     - name: SonarCloud Scan
       run: |
         ./sonar-scanner-${{ steps.get-sonar-version.outputs.version }}-linux/bin/sonar-scanner \
-          -Dsonar.projectKey=santhosh80553_unittest_repo_test_sonar\
+          -Dsonar.projectKey=santhosh80553_python_ci_sonarcloud\
           -Dsonar.organization=santhosh80553\
           -Dsonar.sources=. \
+          -Dsonar.python.coverage.reportPaths=coverage.xml \
+          -Dsonar.pullrequest.base=main \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-        # Add a step to print SonarCloud analysis logs
-        cat .scannerwork/report-task.txt
-
